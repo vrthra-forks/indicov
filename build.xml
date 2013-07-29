@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="all">
+	<property name="src" location="src" />
+	<property name="classes" location="classes" />
+	<property name="asm.jar" value="asm-debug-all-4.0.jar" />
+	<!-- property name="asm.jar" value="asm-4.0.jar" / -->
+	<property name="lib-asm.jar" location="lib/${asm.jar}" />
+
+	<property name="jar" location="lib/indycov.jar" />
+	
+	<target name="compile">
+        <mkdir dir="${classes}"/>
+		<javac srcdir="${src}" destdir="${classes}" source="1.7" target="1.7" classpath="${lib-asm.jar}" debug="on" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${jar}" basedir="${classes}">
+			<manifest>
+				<!-- agent attributes -->
+				<attribute name="Premain-Class" value="fr.umlv.indycov.Agent" />
+				<attribute name="Agent-Class" value="fr.umlv.indycov.Agent" />
+				<attribute name="Boot-Class-Path" value="${asm.jar}" />
+				<attribute name="Can-Retransform-Classes" value="true"/>
+				<attribute name="Can-Redefine-Classes" value="true" />
+
+				<!-- main attributes -->
+				<attribute name="Class-Path" value="${asm.jar}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="all" depends="jar" />
+
+	<target name="clean">
+		<delete file="${jar}" />
+		<delete dir="${classes}" />
+	</target>
+
+</project>
